@@ -61,3 +61,62 @@ func CreateEvent(context *gin.Context) {
 	context.JSON(http.StatusCreated, gin.H{"message": "Event created succesfully!"})
 
 }
+
+func UpdateEvent(context *gin.Context) {
+
+	id, err := strconv.ParseInt(context.Param("id"), 10, 64)
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"message": "cannot pasre string to int64", "Error": err})
+		return
+	}
+	_, err = models.GetEventByID(id)
+
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"message": "cannot fetch the event", "Error": err})
+		return
+	}
+
+	var updatedEvent models.Event
+
+	err = context.ShouldBindBodyWithJSON(&updatedEvent)
+
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"message": "Error", "Error": err})
+		return
+	}
+
+	updatedEvent.Id = id
+	err = updatedEvent.Update()
+
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"message": "error occured in update", "Error": err})
+		return
+	}
+
+	context.JSON(http.StatusOK, gin.H{"message": "Updated Succesfully"})
+
+}
+
+func Delete(context *gin.Context) {
+	id, err := strconv.ParseInt(context.Param("id"), 10, 64)
+
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"message": "error occured in parsing string to int", "Error": err})
+		return
+	}
+
+	event, err := models.GetEventByID(id)
+
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"message": "No data with the given id", "Error": err})
+		return
+	}
+
+	err = event.DeleteEvent(id)
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"message": "error occured in deletion", "Error": err})
+		return
+	}
+
+	context.JSON(http.StatusOK, gin.H{"message": "Deleted Succesfully"})
+}

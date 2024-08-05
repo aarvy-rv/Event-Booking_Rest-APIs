@@ -17,5 +17,8 @@ func Apis(server *gin.Engine) {
 	server.GET("/events", service.GetEvents)
 	server.GET("/event/:id", service.GetEvent)
 	server.POST("/create/event", service.CreateEvent)
+	server.PUT("/event/update/:id", service.UpdateEvent)
+	server.DELETE("/event/delete/:id", service.Delete)
+
 	server.Run(":8080")
 }
