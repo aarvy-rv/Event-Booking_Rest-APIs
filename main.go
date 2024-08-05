@@ -30,21 +30,23 @@ func main() {
 
 func getEvents(context *gin.Context) {
 
-	events := models.GetAllEvents()
+	events, err := models.GetAllEvents()
+
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"message": "Could Not Fetch Events", "Error": err})
+		return
+	}
 	context.JSON(http.StatusOK, events)
 	//gin.H is an alias of the map[string] any
 
 }
 
-var id = 0
 var uid = 0
 
 func createEvent(context *gin.Context) {
 
 	var event models.Event
-	id++
 	uid++
-	event.Id = id
 	event.UserID = uid
 
 	err := context.ShouldBindBodyWithJSON(&event) // this method maps the request body with the struct variablr event
@@ -54,7 +56,12 @@ func createEvent(context *gin.Context) {
 		return
 	}
 
-	event.Save()
+	err = event.Save()
+
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"message": "Could Save Events", "Error": err})
+		return
+	}
 	context.JSON(http.StatusCreated, gin.H{"message": "Event created succesfully!"})
 
 }
