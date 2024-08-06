@@ -1,4 +1,4 @@
-An Event-Booking backend system implemented in Go Lang with authentication and authorization.
+An event-booking backend system with authentication and authorization was implemented in Go Lang.
 ----------------------------------------------------------------------------------------------
 
 APIs:
@@ -20,7 +20,7 @@ APIs:
 ->GET    "/events"
 ->GET    "/event/:id"
 
-Belows APIs need an "Authothorization" header whose value will be the token recieved in the login api when user logs in.
+Belows APIs need an "Authorization" header whose value will be the token received in the login API when the user logs in.
 ->POST    "/create/event"
   Body:
   {
@@ -35,7 +35,7 @@ Belows APIs need an "Authothorization" header whose value will be the token reci
     {
     "name" : "UpdatedTesttt",
     "description": "An updated test event",
-    "location": "Local lcation",
+    "location": "Local location",
     "dateTime":"2024-08-04T11:38:00.000Z"
     }
 
