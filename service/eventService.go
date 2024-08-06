@@ -6,7 +6,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"project.com/event-booking/models"
-	"project.com/event-booking/utils"
 )
 
 func GetEvent(context *gin.Context) {
@@ -38,28 +37,13 @@ func GetEvents(context *gin.Context) {
 
 }
 
-var uid = 0
-
 func CreateEvent(context *gin.Context) {
 
-	token := context.Request.Header.Get("Authorization")
-
-	if token == "" {
-		context.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized! Empty  Token"})
-		return
-	}
-
-	err := utils.VerifyToken(token)
-	if err != nil {
-		context.JSON(http.StatusUnauthorized, gin.H{"message": "Authorization Failed !", "Error": err})
-		return
-	}
-
 	var event models.Event
-	uid++
-	event.UserID = uid
+	userId := context.GetInt64("userId")
+	event.UserID = userId
 
-	err = context.ShouldBindBodyWithJSON(&event) // this method maps the request body with the struct variablr event
+	err := context.ShouldBindBodyWithJSON(&event) // this method maps the request body with the struct variablr event
 
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"message": "required field missing"})
@@ -83,11 +67,18 @@ func UpdateEvent(context *gin.Context) {
 		context.JSON(http.StatusBadRequest, gin.H{"message": "cannot pasre string to int64", "Error": err})
 		return
 	}
-	_, err = models.GetEventByID(id)
+	event, err := models.GetEventByID(id)
+	userId := context.GetInt64("userId")
 
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"message": "cannot fetch the event", "Error": err})
 		return
+	}
+
+	if event.UserID != userId {
+		context.JSON(http.StatusUnauthorized, gin.H{"message": "You are not authorized to update this event."})
+		return
+
 	}
 
 	var updatedEvent models.Event
@@ -120,9 +111,15 @@ func Delete(context *gin.Context) {
 	}
 
 	event, err := models.GetEventByID(id)
+	userId := context.GetInt64("userId")
 
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"message": "No data with the given id", "Error": err})
+		return
+	}
+
+	if userId != event.UserID {
+		context.JSON(http.StatusUnauthorized, gin.H{"message": "You are not authorized to Delete this event."})
 		return
 	}
 

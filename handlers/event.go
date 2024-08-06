@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"github.com/gin-gonic/gin"
+	"project.com/event-booking/middlewares"
 	"project.com/event-booking/service"
 )
 
@@ -16,9 +17,20 @@ func Apis(server *gin.Engine) {
 
 	server.GET("/events", service.GetEvents)
 	server.GET("/event/:id", service.GetEvent)
-	server.POST("/create/event", service.CreateEvent)
-	server.PUT("/event/update/:id", service.UpdateEvent)
-	server.DELETE("/event/delete/:id", service.Delete)
+
+	// We can group end points so that it can use mididdleware defined once
+	authenticated := server.Group("/")
+	authenticated.Use(middlewares.Authenticate)
+	authenticated.POST("/create/event", service.CreateEvent)
+	authenticated.PUT("/event/update/:id", service.UpdateEvent)
+	authenticated.DELETE("/event/delete/:id", service.Delete)
+	authenticated.POST("/events/:id/register", service.RegisterForEvent)
+	authenticated.DELETE("/events/:id/register/cancel", service.CancelRegistration)
+
+	//server.POST("/create/event", middlewares.Authenticate,service.CreateEvent)
+	//server.PUT("/event/update/:id", service.UpdateEvent)
+	//server.DELETE("/event/delete/:id", service.Delete)
+
 	server.POST("/signup", service.Signup)
 	server.POST("/login", service.Login)
 	server.Run(":8080")
