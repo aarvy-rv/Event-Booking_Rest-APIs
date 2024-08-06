@@ -3,25 +3,25 @@ An event-booking backend system with authentication and authorization was implem
 
 APIs:
 
-->POST    "/signup"   
+|POST:    "/signup"   
   Body Format for Signup(JSON):
     {
     "email":"test@abc.com",
     "password":"test@123"
     }
-
-->POST    "/login"
+    
+| POST:    "/login"
   Body Format for Login(JSON):
     {
     "email":"test@abc.com",
     "password":"test@123"
     }
 
-->GET    "/events"
-->GET    "/event/:id"
+| GET:    "/events"
+| GET:    "/event/:id"
 
-Belows APIs need an "Authorization" header whose value will be the token received in the login API when the user logs in.
-->POST    "/create/event"
+| Belows APIs need an "Authorization" header whose value will be the token received in the login API when the user logs in.
+ | POST:    "/create/event"
   Body:
   {
     "name" : "Testingggg",
@@ -30,7 +30,7 @@ Belows APIs need an "Authorization" header whose value will be the token receive
     "dateTime":"2024-08-04T11:38:00.000Z"
 }
 
-->PUT     "/event/update/:id"
+| PUT:     "/event/update/:id" , 
   Body:
     {
     "name" : "UpdatedTesttt",
@@ -39,6 +39,6 @@ Belows APIs need an "Authorization" header whose value will be the token receive
     "dateTime":"2024-08-04T11:38:00.000Z"
     }
 
-->DELETE  "/event/delete/:id"
-->POST    "/events/:id/register"
+| DELETE API:  "/event/delete/:id"
+| POST API:    "/events/:id/register"
 ->DELETE  "/events/:id/register/cancel"
