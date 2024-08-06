@@ -1,44 +1,141 @@
-An event-booking backend system with authentication and authorization was implemented in Go Lang.
+An event-booking backend system with basic authentication and authorization(Implemented in Go Lang).
 ----------------------------------------------------------------------------------------------
 
-APIs:
+Dependencies:
+Execute the below commands to download the packages:
 
-|POST:    "/signup" |
-  Body Format for Signup(JSON):
-    {
-    "email":"test@abc.com",
-    "password":"test@123"
-    }
-    
-| POST:    "/login" |
-  Body Format for Login(JSON):
-    {
-    "email":"test@abc.com",
-    "password":"test@123"
-    }
+go get -u github.com/gin-gonic/gin
 
-| GET:    "/events" |
-| GET:    "/event/:id" |
+go get -u github.com/golang-jwt/jwt/v5
 
-| Belows APIs need an "Authorization" header whose value will be the token received in the login API when the user logs in.
- | POST:    "/create/event" |
-  Body:
-  {
-    "name" : "Testingggg",
-    "description": "A test event",
+## API Endpoints (Postman collection of APIs is provided in the code.)
+
+### Authentication
+
+#### Login:
+-------------------
+
+- **URL:** `/login`
+- **Method:** `POST`
+- **Headers:** 
+  - `Content-Type: application/json`
+- **Body Parameters:**
+ ```json
+{
+  "email": "test@abc.com",
+  "password": "test@1123"
+}
+```
+
+#### SignUp:
+---------------------
+
+- **URL:** `/signup`
+- **Method:** `POST`
+- **Headers:** 
+  - `Content-Type: application/json`
+- **Body Parameters:**
+```json
+{
+  "email": "test@abc.com",
+  "password": "test@1123"
+}
+```
+
+### FETCH:
+
+#### Fetch all events:
+--------------------------
+
+- **URL:** `/events`
+- **Method:** `GET`
+- **Headers:** 
+  - `Content-Type: application/json`
+
+#### Fetch event by Id:
+----------------------------------
+
+- **URL:** `/events/{id}`
+- **Method:** `GET`
+- **Headers:** 
+  - `Content-Type: application/json`
+
+
+### CREATE:
+
+#### Create Event:
+---------------------------------------
+
+- **URL:** `/create/event`
+- **Method:** `POST`
+- **Headers:** 
+  - `Content-Type: application/json`
+  - `Authorization: {Token received at the time of login} `
+- **Body Parameters:**
+```json
+{
+    "name": "Seminar",
+    "description": "Tech Event",
     "location": "Delhi",
     "dateTime":"2024-08-04T11:38:00.000Z"
 }
+```
 
-| PUT:     "/event/update/:id" | 
-  Body:
-    {
-    "name" : "UpdatedTesttt",
-    "description": "An updated test event",
-    "location": "Local location",
+### UPDATE:
+
+#### Update Event By Id:
+---------------------------------
+- **URL:** `/event/update/{id}`
+- **Method:** `POST`
+- **Headers:** 
+  - `Content-Type: application/json`
+  - `Authorization: {Token received at the time of login} `
+- **Params:**
+    -` id: {int}` 
+- **Body Parameters:**
+```json
+{
+    "name": "Seminar",
+    "description": "Tech Event",
+    "location": "Delhi",
     "dateTime":"2024-08-04T11:38:00.000Z"
-    }
+}
+```
 
-| DELETE API:  "/event/delete/:id"
-| POST API:    "/events/:id/register"
-| DELETE  "/events/:id/register/cancel"
+### DELETE:
+
+#### Delete Event By Id:
+------------------------------
+
+- **URL:** `/event/delete/{id}`
+- **Method:** `DELETE`
+- **Headers:** 
+  - `Content-Type: application/json`
+  - `Authorization: {Token received at the time of login} `
+- **Params:**
+    -` id: {int}`
+
+
+### REGISTRATION & CANCELLATION:
+
+#### Register for an event:
+----------------------------------
+
+- **URL:** `/events/:id/register`
+- **Method:** `POST`
+- **Headers:** 
+  - `Content-Type: application/json`
+  - `Authorization: {Token received at the time of login} `
+- **Params:**
+    -` id: {event id of type int}` 
+
+#### De-register for an event:
+------------------------------------
+
+- **URL:** `/events/:id/register/cancel`
+- **Method:** `POST`
+- **Headers:** 
+  - `Content-Type: application/json`
+  - `Authorization: {Token received at the time of login} `
+- **Params:**
+    -` id: {event id of type int}`
