@@ -139,3 +139,5 @@ go get -u github.com/golang-jwt/jwt/v5
   - `Authorization: {Token received at the time of login} `
 - **Params:**
     -` id: {event id of type int}`
+
+> **Note:** Changes/updates can be done.
