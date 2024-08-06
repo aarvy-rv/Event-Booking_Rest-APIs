@@ -11,5 +11,6 @@ func main() {
 	db.InitDB()
 	server := gin.Default()
 	handlers.Apis(server)
+	//handlers.Uapis(server)
 
 }

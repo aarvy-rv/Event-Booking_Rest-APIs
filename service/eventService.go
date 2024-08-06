@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"project.com/event-booking/models"
+	"project.com/event-booking/utils"
 )
 
 func GetEvent(context *gin.Context) {
@@ -41,11 +42,24 @@ var uid = 0
 
 func CreateEvent(context *gin.Context) {
 
+	token := context.Request.Header.Get("Authorization")
+
+	if token == "" {
+		context.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized! Empty  Token"})
+		return
+	}
+
+	err := utils.VerifyToken(token)
+	if err != nil {
+		context.JSON(http.StatusUnauthorized, gin.H{"message": "Authorization Failed !", "Error": err})
+		return
+	}
+
 	var event models.Event
 	uid++
 	event.UserID = uid
 
-	err := context.ShouldBindBodyWithJSON(&event) // this method maps the request body with the struct variablr event
+	err = context.ShouldBindBodyWithJSON(&event) // this method maps the request body with the struct variablr event
 
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"message": "required field missing"})

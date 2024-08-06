@@ -19,6 +19,7 @@ func Apis(server *gin.Engine) {
 	server.POST("/create/event", service.CreateEvent)
 	server.PUT("/event/update/:id", service.UpdateEvent)
 	server.DELETE("/event/delete/:id", service.Delete)
-
+	server.POST("/signup", service.Signup)
+	server.POST("/login", service.Login)
 	server.Run(":8080")
 }
